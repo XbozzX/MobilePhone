@@ -1,91 +1,86 @@
 package com.mypackage;
 
-import java.util.Scanner;
+import java.util.ArrayList;
 
 public class MobilePhone {
 
-    public void menuOption(){
-        System.out.println("[1] Add new contact");
-        System.out.println("[2] Update existing contact");
-        System.out.println("[3] Remove Contact");
-        System.out.println("[4] Print list of contacts");
-        System.out.println("[5] Search/find contact");
-        System.out.println("[6] Quit");
+    private String myNumber;
+
+    private ArrayList<Contact> myContact;
+
+    public MobilePhone(String numberContact){
+        this.myContact = new ArrayList<Contact>();
+        this.myNumber = numberContact;
     }
 
-    public void functionMenu(){
+    public boolean addNewContact(Contact contact){
+        if (findContact(contact.getName()) >= 0){
+            System.out.println(findContact(contact));
+            System.out.print("fail");
+            return false;
+        }
+        System.out.println(this.myContact.indexOf(contact));
+        myContact.add(contact);
+        System.out.print("done");
+        return true;
 
-        Scanner keyboard = new Scanner(System.in);
-        Contact userContact = new Contact();
+    }
 
-        System.out.print("Enter your option: ");
-        int userOption = keyboard.nextInt();
-        keyboard.nextLine();
+    public boolean updateContact(Contact oldContact, Contact newContact){
+        if (findContact(oldContact.getName()) >= 0){
+            int index = findContact(oldContact);
+            myContact.set(index, newContact);
+            System.out.println("done");
+            return true;
+        }
+        System.out.println("fail");
+        return false;
+    }
 
+    public boolean removeContact(Contact contact){
+        if (findContact(contact) >= 0){
+            int index = findContact(contact);
+            myContact.remove(index);
+            return true;
+        }
+        return false;
+    }
 
-        while (userOption != 6) {
-            switch(userOption){
-                case 1: //store the input from the user
-                    System.out.print("Enter your contact name: ");
-                    String nameOfContact = keyboard.nextLine();
-                    System.out.print("Enter your contact number");
-                    int numberOfContact = keyboard.nextInt();
-                    keyboard.nextLine();
+    private int findContact(Contact contact) {
+        return this.myContact.indexOf(contact);
+    }
 
-                    userContact.storeContact(nameOfContact, numberOfContact);
-
-                    System.out.print("Enter your option: ");
-                    userOption = keyboard.nextInt();
-                    keyboard.nextLine();
-                    break;
-                    //DONE: modify is broken .... cannot modify the exitsting name
-                case 2 : // modify the existing contact name
-                    System.out.print("Enter your existing contact name: ");
-                    String existingContact = keyboard.nextLine();
-
-                    System.out.print("Enter your new name for existing contact: ");
-                    String newContact = keyboard.nextLine();
-
-                    userContact.modifyContact(existingContact, newContact);
-
-                    System.out.print("Enter your option: ");
-                    userOption = keyboard.nextInt();
-                    keyboard.nextLine();
-                    break;
-                case 3 : // remove the existing contact name
-                    System.out.print("Enter your existing contact name that you want to remove: ");
-                    String removeContact = keyboard.nextLine();
-                    userContact.removeContact(removeContact);
-
-                    System.out.print("Enter your option: ");
-                    userOption = keyboard.nextInt();
-                    keyboard.nextLine();
-                    break;
-                case 4:
-                    userContact.printContact();
-
-                    System.out.print("Enter your option: ");
-                    userOption = keyboard.nextInt();
-                    keyboard.nextLine();
-                    break;
-                case 5: // search the contact based on the user input
-                    System.out.print("Enter your contact name that you want to query: ");
-                    String queryContact = keyboard.nextLine();
-                    System.out.println(userContact.contactQuery(queryContact));
-
-                    System.out.print("Enter your option: ");
-                    userOption = keyboard.nextInt();
-                    keyboard.nextLine();
-                    break;
-
-                default: // prompt the error if the user make mistake in option menu
-                    System.out.println("Please enter correct input !!");
-                    System.out.print("Enter your option: ");
-                    userOption = keyboard.nextInt();
-                    keyboard.nextLine();
-                    break;
+    private int findContact(String contact) {
+        for (int i = 0; i < myContact.size(); i++){
+            Contact contact1 = myContact.get(i);
+            if (contact1.getName().equals(contact)){
+                return i;
             }
         }
-
+        return -1;
     }
+
+    public Contact queryContact(String contact){ // to get the data from Contact class
+        int index = findContact(contact);
+        if (index >= 0){
+            return this.myContact.get(index);
+        }
+        return null;
+    }
+
+    public String queryContact(Contact contact){
+        if (findContact(contact) >=0){ // to validate the data
+            return contact.getName();
+        }
+        return null;
+    }
+
+    public void printContacts(){
+
+        for (int i = 0; i < myContact.size(); i++){
+            System.out.println(myContact.get(i).getName()+
+                    " --> " + myContact.get(i).getPhoneNumber());
+        }
+    }
+
 }
